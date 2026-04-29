@@ -389,18 +389,18 @@
         <section class="card">
           <h2>Cadastros Salvos</h2>
           <label for="importarExcel">Importar planilha Excel com dados das presidentes:</label>
-          <input type="file" id="importarExcel" accept=".xlsx,.xls" />
+          <input type="file" id="importarExcel" accept=".xlsx,.xls,.csv" />
           <div class="aviso">A importacao aceita colunas como Municipio, Presidente, Telefone, Email, Endereco, CEP, Nascimento e Ata.</div>
 
           <label>Importar filiados estaduais separados por sexo:</label>
           <div class="grid-2">
             <div>
               <label for="importarFiliadasMulheresExcel">Planilha de filiadas mulheres:</label>
-              <input type="file" id="importarFiliadasMulheresExcel" accept=".xlsx,.xls" />
+              <input type="file" id="importarFiliadasMulheresExcel" accept=".xlsx,.xls,.csv" />
             </div>
             <div>
               <label for="importarFiliadosHomensExcel">Planilha de filiados homens:</label>
-              <input type="file" id="importarFiliadosHomensExcel" accept=".xlsx,.xls" />
+              <input type="file" id="importarFiliadosHomensExcel" accept=".xlsx,.xls,.csv" />
             </div>
           </div>
           <button id="btnImportarFiliadosSeparados" class="btn-primary" type="button">Unir planilhas e atualizar grafico</button>
@@ -581,14 +581,27 @@
     }
 
     function listarCadastros() {
-      $("statTotal").innerText = cadastros.length;
-      $("statAtaOk").innerText = cadastros.filter(c => c.ata === "Ata OK").length;
-      $("statAtaPendente").innerText = cadastros.filter(c => c.ata !== "Ata OK").length;
-      $("statPresidentes").innerText = cadastros.filter(c => c.nome).length;
+      const municipiosUnicosValidos = new Set(cadastros.map(c => normalizarTexto(c.municipio)).filter(m => municipioValido(m)));
+      $("statTotal").innerText = municipiosUnicosValidos.size;
+      const cadastrosValidosPorMunicipio = new Map();
+      cadastros
+        .filter(c => municipioValido(c.municipio))
+        .forEach(c => {
+          const chave = normalizarTexto(c.municipio);
+          if (!cadastrosValidosPorMunicipio.has(chave)) cadastrosValidosPorMunicipio.set(chave, c);
+          else {
+            const atual = cadastrosValidosPorMunicipio.get(chave);
+            if (c.ata === "Ata OK" || (!atual.nome && c.nome)) cadastrosValidosPorMunicipio.set(chave, c);
+          }
+        });
+      const cadastrosValidosUnicos = Array.from(cadastrosValidosPorMunicipio.values());
+      $("statAtaOk").innerText = cadastrosValidosUnicos.filter(c => c.ata === "Ata OK").length;
+      $("statAtaPendente").innerText = cadastrosValidosUnicos.filter(c => c.ata !== "Ata OK").length;
+      $("statPresidentes").innerText = cadastrosValidosUnicos.filter(c => c.nome).length;
       const termo = $("busca").value.toLowerCase();
       const lista = $("lista");
       lista.innerHTML = "";
-      const filtrados = cadastros.filter(c => (c.nome || "").toLowerCase().includes(termo) || (c.municipio || "").toLowerCase().includes(termo));
+      const filtrados = cadastrosValidosUnicos.filter(c => (c.nome || "").toLowerCase().includes(termo) || (c.municipio || "").toLowerCase().includes(termo));
       if (filtrados.length === 0) {
         lista.innerHTML = "<p>Nenhum cadastro encontrado.</p>";
         return;
@@ -722,10 +735,22 @@
 
     function valorPorColuna(linha, nomesPossiveis) {
       const chaves = Object.keys(linha);
-      for (const nome of nomesPossiveis) {
-        const encontrado = chaves.find(chave => normalizarTexto(chave) === normalizarTexto(nome));
-        if (encontrado) return linha[encontrado];
+      const nomesNormalizados = nomesPossiveis.map(nome => normalizarTexto(nome));
+
+      for (const chave of chaves) {
+        const chaveNormalizada = normalizarTexto(chave);
+        if (nomesNormalizados.includes(chaveNormalizada)) return linha[chave];
       }
+
+      for (const chave of chaves) {
+        const chaveNormalizada = normalizarTexto(chave);
+        for (const nomeNormalizado of nomesNormalizados) {
+          if (chaveNormalizada.includes(nomeNormalizado) || nomeNormalizado.includes(chaveNormalizada)) {
+            return linha[chave];
+          }
+        }
+      }
+
       return "";
     }
 
@@ -819,46 +844,51 @@
       leitor.readAsArrayBuffer(arquivo);
     }
 
-function contarFiliadosPorMunicipio(workbook) {
-  const mapa = {};
+    function municipioValido(nome) {
+      const texto = String(nome || "").trim();
+      const normalizado = normalizarTexto(texto);
+      if (!texto) return false;
+      if (texto.length < 3) return false;
+      const bloqueados = ["MUNICIPIO", "8-MUNICIPIO", "NM_MUNICIPIO", "CIDADE", "PARANA", "PR", "UF", "TOTAL", "TOTAL GERAL", "BRASIL", "EXTERIOR", "NAO INFORMADO", "SEM MUNICIPIO"];
+      return !bloqueados.includes(normalizado);
+    }
 
-  workbook.SheetNames.forEach(nomeAba => {
-    const sheet = workbook.Sheets[nomeAba];
-    const linhas = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+    function contarFiliadosPorMunicipio(workbook) {
+      const mapa = {};
+      workbook.SheetNames.forEach(nomeAba => {
+        const sheet = workbook.Sheets[nomeAba];
+        const linhas = XLSX.utils.sheet_to_json(sheet, { defval: "" });
 
-    linhas.forEach(linha => {
-      let municipio = String(valorPorColuna(linha, [
-        "8-MUNICIPIO",
-        "8-MUNICÍPIO",
-        "Municipio",
-        "Município",
-        "Cidade",
-        "NM_MUNICIPIO",
-        "Nome municipio"
-      ])).trim();
+        linhas.forEach(linha => {
+          // tenta identificar coluna de municipio
+          let municipio = String(valorPorColuna(linha, [
+            "8-MUNICIPIO", "8-MUNICÍPIO", "NM_MUNICIPIO", "NM_MUNICÍPIO", "Municipio", "Município", "Cidade", "Nome municipio"
+          ])).trim();
 
-      if (!municipio) return;
+          // fallback: usa primeira coluna da planilha
+          if (!municipio) {
+            const primeiraColuna = Object.keys(linha)[0];
+            municipio = String(linha[primeiraColuna] || "").trim();
+          }
 
-      municipio = municipio.replace(/\s+/g, " ").trim();
-      const chave = normalizarTexto(municipio);
+          if (!municipioValido(municipio)) return;
 
-      if (!mapa[chave]) {
-        mapa[chave] = { nome: municipio, total: 0 };
-      }
+          municipio = municipio.trim();
+          const chave = normalizarTexto(municipio);
 
-      mapa[chave].total += 1;
-    });
-  });
+          if (!mapa[chave]) mapa[chave] = { nome: municipio, total: 0 };
+          mapa[chave].total += 1;
+        });
+      });
 
-  const resultado = {};
+      // converte para formato simples
+      const resultado = {};
+      Object.values(mapa).forEach(item => {
+        resultado[item.nome] = item.total;
+      });
 
-  Object.values(mapa).forEach(item => {
-    resultado[item.nome] = item.total;
-  });
-
-  console.log("Mapa de municipios lido:", resultado);
-  return resultado;
-}
+      console.log("Mapa de municipios lido:", resultado);
+      return resultado;
     }
 
     async function lerWorkbookArquivo(arquivo) {
@@ -866,15 +896,28 @@ function contarFiliadosPorMunicipio(workbook) {
         const leitor = new FileReader();
         leitor.onload = function(e) {
           try {
-            const dados = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(dados, { type: "array", cellDates: false });
+            const nomeArquivo = arquivo.name.toLowerCase();
+            let workbook;
+
+            if (nomeArquivo.endsWith(".csv")) {
+              workbook = XLSX.read(e.target.result, { type: "string", raw: true });
+            } else {
+              const dados = new Uint8Array(e.target.result);
+              workbook = XLSX.read(dados, { type: "array", cellDates: false });
+            }
+
             resolve(workbook);
           } catch (erro) {
             reject(erro);
           }
         };
         leitor.onerror = reject;
-        leitor.readAsArrayBuffer(arquivo);
+
+        if (arquivo.name.toLowerCase().endsWith(".csv")) {
+          leitor.readAsText(arquivo, "UTF-8");
+        } else {
+          leitor.readAsArrayBuffer(arquivo);
+        }
       });
     }
 
@@ -895,7 +938,7 @@ function contarFiliadosPorMunicipio(workbook) {
         const workbookHomens = await lerWorkbookArquivo(arquivoHomens);
         const mapaMulheres = contarFiliadosPorMunicipio(workbookMulheres);
         const mapaHomens = contarFiliadosPorMunicipio(workbookHomens);
-        const municipios = Array.from(new Set([...Object.keys(mapaMulheres), ...Object.keys(mapaHomens)]));
+        const municipios = Array.from(new Set([...Object.keys(mapaMulheres), ...Object.keys(mapaHomens)])).filter(municipioValido);
 
         const snapshot = await getDocs(colecao);
         const existentes = snapshot.docs.map(item => ({ id: item.id, ...item.data() }));
@@ -1002,6 +1045,15 @@ function contarFiliadosPorMunicipio(workbook) {
       const testeFiliados = calcularFiliados({ filiadosMulheres: 60, filiadosHomens: 40 });
       console.assert(testeFiliados.total === 100 && testeFiliados.percentualMulheres === 60 && testeFiliados.percentualHomens === 40, "Teste: calculo de filiados deve retornar total e percentuais");
       console.assert(typeof importarFiliadosSeparados === "function", "Teste: importacao separada de filiados deve existir");
+      console.assert(valorPorColuna({ "8-MUNICIPIO": "CURITIBA" }, ["8-MUNICIPIO", "Municipio", "Município"]) === "CURITIBA", "Teste: deve reconhecer coluna 8-MUNICIPIO");
+      console.assert(municipioValido("CURITIBA") === true && municipioValido("TOTAL") === false, "Teste: deve filtrar linhas que nao sao municipios");
+      const testeMapaMunicipio = new Map();
+      [{ municipio: "CURITIBA", ata: "Ata pendente" }, { municipio: "Curitiba", ata: "Ata OK" }].forEach(c => {
+        const chave = normalizarTexto(c.municipio);
+        if (!testeMapaMunicipio.has(chave)) testeMapaMunicipio.set(chave, c);
+        else if (c.ata === "Ata OK") testeMapaMunicipio.set(chave, c);
+      });
+      console.assert(testeMapaMunicipio.size === 1 && Array.from(testeMapaMunicipio.values())[0].ata === "Ata OK", "Teste: estatisticas devem considerar municipio unico e priorizar Ata OK");
     }
 
     iniciarEventos();
