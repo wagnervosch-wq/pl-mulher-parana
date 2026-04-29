@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro PL Mulher Parana Online</title>
+  <style>
+    :root {
+      --azul: #005bab;
+      --azul-escuro: #002b68;
+      --rosa: #f04fa3;
+      --rosa-forte: #e91e83;
+      --branco: #ffffff;
+      --texto: #08275c;
+      --sombra: 0 12px 30px rgba(0, 43, 104, 0.12);
+    }
+
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #fff 0%, #fff6fb 45%, #f3f8ff 100%);
+      color: var(--texto);
+    }
+
+    header {
+      background: var(--branco);
+      color: var(--azul-escuro);
+      padding: 18px 28px;
+      border-bottom: 1px solid #ffd2e8;
+      box-shadow: 0 4px 20px rgba(233, 30, 131, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .logo-3d { display: flex; align-items: center; gap: 14px; }
+    .logo-pl {
+      font-size: 54px;
+      font-weight: 900;
+      font-style: italic;
+      color: var(--azul);
+      letter-spacing: -6px;
+      line-height: 0.8;
+      text-shadow: 3px 4px 0 #003d7a, 7px 9px 18px rgba(0, 43, 104, 0.28);
+    }
+    .logo-texto { line-height: 1; }
+    .logo-texto .mulher {
+      display: block;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--rosa);
+      font-family: cursive;
+      text-shadow: 2px 3px 0 #ffd0e8, 4px 6px 12px rgba(240, 79, 163, 0.26);
+    }
+    .logo-texto .presidentes {
+      display: block;
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--rosa);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    header h1 { margin: 0; font-size: 22px; color: var(--azul-escuro); }
+    header p { margin: 5px 0 0; font-size: 14px; color: #38517e; }
+
+    .app-shell {
+      max-width: 1280px;
+      margin: 22px auto;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 20px;
+    }
+
+    aside, .card, .login-screen, .user-bar, .stat-card {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid #ffd2e8;
+      box-shadow: var(--sombra);
+    }
+
+    aside {
+      border-radius: 24px;
+      padding: 20px;
+      height: fit-content;
+      position: sticky;
+      top: 120px;
+    }
+
+    .menu-title {
+      font-weight: 900;
+      color: var(--rosa-forte);
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 14px;
+      border-radius: 14px;
+      margin-bottom: 8px;
+      color: var(--azul-escuro);
+      font-weight: 700;
+      background: #fff;
+    }
+
+    .menu-item.active {
+      color: #fff;
+      background: linear-gradient(135deg, var(--rosa), var(--rosa-forte));
+      box-shadow: 0 8px 20px rgba(233, 30, 131, 0.28);
+    }
+
+    .frase-card {
+      margin-top: 22px;
+      background: linear-gradient(135deg, #fff0f8, #ffffff);
+      border: 1px solid #ffd2e8;
+      border-radius: 18px;
+      padding: 18px;
+      text-align: center;
+      color: var(--rosa-forte);
+      font-weight: 900;
+    }
+
+    main { display: grid; grid-template-columns: 1fr; gap: 18px; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .stat-card { border-radius: 22px; padding: 18px; display: flex; align-items: center; gap: 14px; }
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #ff84bf, #e91e83);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 7px 16px rgba(233, 30, 131, 0.35);
+    }
+    .stat-card strong { display: block; font-size: 26px; color: var(--azul-escuro); }
+    .stat-card span { font-size: 13px; color: #5d6c91; }
+    .content-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 18px; }
+    .card { border-radius: 24px; padding: 20px; }
+    h2 { margin-top: 0; color: var(--rosa-forte); font-size: 21px; }
+    label { display: block; margin-top: 12px; font-weight: 800; font-size: 13px; color: var(--azul-escuro); }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #ffc2dd;
+      border-radius: 12px;
+      font-size: 15px;
+      background: #fff;
+      color: var(--azul-escuro);
+      outline-color: var(--rosa);
+    }
+    textarea { min-height: 80px; resize: vertical; }
+    button { border: none; border-radius: 13px; padding: 12px 16px; margin-top: 14px; cursor: pointer; font-size: 15px; font-weight: 900; }
+    .btn-primary { background: linear-gradient(135deg, var(--rosa), var(--rosa-forte)); color: white; width: 100%; box-shadow: 0 10px 22px rgba(233, 30, 131, 0.28); }
+    .btn-secondary { background: #fff0f8; color: var(--rosa-forte); border: 1px solid #ffc2dd; margin-right: 6px; }
+    .btn-danger { background: #d62828; color: white; }
+    .registro { border: 1px solid #ffd2e8; border-radius: 18px; padding: 14px; margin-bottom: 12px; background: linear-gradient(135deg, #fff, #fff7fb); }
+    .registro h3 { margin: 0; color: var(--azul-escuro); font-size: 18px; }
+    .registro p { margin: 5px 0; font-size: 14px; line-height: 1.4; }
+    .status-ok { color: #087f23; background: #ddf7e7; padding: 4px 9px; border-radius: 10px; font-weight: bold; }
+    .status-pendente { color: #e91e83; background: #ffe0ef; padding: 4px 9px; border-radius: 10px; font-weight: bold; }
+    .actions, .top-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+    .top-actions { margin-bottom: 12px; }
+    .top-actions button { margin-top: 0; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .preview-img { max-width: 90px; max-height: 90px; border-radius: 12px; display: block; margin-top: 6px; border: 1px solid #ffd2e8; object-fit: cover; }
+    .filiados-box { margin-top: 14px; padding: 14px; border: 1px solid #ffd2e8; border-radius: 18px; background: #fff7fb; }
+    .filiados-resumo { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .filiados-mini { background: #fff; border: 1px solid #ffd2e8; border-radius: 14px; padding: 10px; text-align: center; }
+    .filiados-mini strong { display: block; font-size: 22px; color: var(--azul-escuro); }
+    .filiados-mini span { font-size: 12px; color: #5d6c91; }
+    .grafico-pizza { width: 150px; height: 150px; border-radius: 50%; margin: 14px auto; background: conic-gradient(var(--rosa) 0deg, var(--rosa) 0deg, var(--azul) 0deg 360deg); box-shadow: inset 0 0 0 18px #fff, 0 8px 18px rgba(0,43,104,.12); }
+    .legenda-grafico { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; font-size: 13px; }
+    .legenda-item { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+    .bolinha { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+    .bolinha.mulheres { background: var(--rosa); }
+    .bolinha.homens { background: var(--azul); }
+    .arquivo-link, .contato-link { display: inline-block; margin: 4px 8px 4px 0; color: var(--rosa-forte); font-weight: bold; text-decoration: none; }
+    .aviso { background: #fff7fb; border: 1px solid #ffd2e8; padding: 10px; border-radius: 12px; font-size: 13px; margin-bottom: 12px; color: #38517e; }
+    .online { background: #f0f8ff; border: 1px solid #b7d7ff; }
+    .login-screen { max-width: 420px; margin: 60px auto; border-radius: 26px; padding: 26px; }
+    .login-screen h2 { text-align: center; color: var(--rosa-forte); margin-bottom: 8px; }
+    .login-screen p { text-align: center; color: #5d6c91; font-size: 14px; }
+    .user-bar { border-radius: 18px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .user-bar strong { color: var(--rosa-forte); }
+    .hidden { display: none !important; }
+    .historico-box { background:#fff7fb; border:1px solid #ffd2e8; border-radius:12px; padding:10px; margin-top:8px; font-size:13px; }
+    .search-box { margin-bottom: 12px; }
+    footer { text-align: center; color: var(--rosa-forte); font-weight: 900; padding: 22px; }
+
+    @media (max-width: 1100px) {
+      .app-shell { grid-template-columns: 1fr; }
+      aside { position: static; }
+      .content-grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 700px) {
+      header { padding: 14px; }
+      .header-inner { align-items: flex-start; flex-direction: column; }
+      .logo-pl { font-size: 44px; }
+      .logo-texto .mulher { font-size: 23px; }
+      .stats, .grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="logo-3d">
+        <div class="logo-pl">PL</div>
+        <div class="logo-texto">
+          <span class="mulher">Mulher</span>
+          <span class="presidentes">Presidentes<br>Municipais</span>
+        </div>
+      </div>
+      <div>
+        <h1>Ola, Wagner!</h1>
+        <p>Sistema online do PL Mulher Parana - Presidentes Municipais</p>
+      </div>
+    </div>
+  </header>
+
+  <section id="loginScreen" class="login-screen">
+    <div class="logo-3d" style="justify-content:center; margin-bottom:18px;">
+      <div class="logo-pl">PL</div>
+      <div class="logo-texto">
+        <span class="mulher">Mulher</span>
+        <span class="presidentes">Parana</span>
+      </div>
+    </div>
+    <h2>Acesso Restrito</h2>
+    <p>Entre com seu e-mail e senha autorizados para acessar o sistema.</p>
+    <label for="loginEmail">E-mail:</label>
+    <input type="email" id="loginEmail" placeholder="seuemail@exemplo.com" />
+    <label for="loginSenha">Senha:</label>
+    <input type="password" id="loginSenha" placeholder="Digite sua senha" />
+    <button id="btnEntrar" class="btn-primary" type="button">Entrar no Sistema</button>
+  </section>
+
+  <div id="appArea" class="app-shell hidden">
+    <aside>
+      <div class="menu-title">Menu principal</div>
+      <div class="menu-item active">Dashboard</div>
+      <div class="menu-item">Municipios</div>
+      <div class="menu-item">Adicionar municipio</div>
+      <div class="menu-item">Importar planilha</div>
+      <div class="menu-item">Pendencias de ata</div>
+      <div class="menu-item">Contatos</div>
+      <div class="frase-card">Juntas, somos mais fortes!<br><br>PL Mulher Parana</div>
+    </aside>
+
+    <main>
+      <div class="user-bar">
+        <div>Usuario logado: <strong id="usuarioLogado">-</strong></div>
+        <button id="btnSair" class="btn-secondary" type="button">Sair</button>
+      </div>
+
+      <section class="stats">
+        <div class="stat-card"><div class="stat-icon">M</div><div><strong id="statTotal">0</strong><span>Municipios cadastrados</span></div></div>
+        <div class="stat-card"><div class="stat-icon">OK</div><div><strong id="statAtaOk">0</strong><span>Atas recebidas</span></div></div>
+        <div class="stat-card"><div class="stat-icon">!</div><div><strong id="statAtaPendente">0</strong><span>Atas pendentes</span></div></div>
+        <div class="stat-card"><div class="stat-icon">P</div><div><strong id="statPresidentes">0</strong><span>Presidentes cadastradas</span></div></div>
+      </section>
+
+      <div class="content-grid">
+        <section class="card">
+          <h2 id="formTitle">Novo Cadastro</h2>
+          <div class="aviso online"><strong>Modo online:</strong> os dados serao salvos no Firebase Firestore e os arquivos no Firebase Storage.</div>
+          <input type="hidden" id="editId" />
+
+          <label for="nome">Nome completo:</label>
+          <input type="text" id="nome" placeholder="Digite o nome completo" />
+
+          <label for="nascimento">Data de nascimento:</label>
+          <input type="date" id="nascimento" />
+
+          <div class="grid-2">
+            <div>
+              <label for="cep">CEP:</label>
+              <input type="text" id="cep" placeholder="00000-000" />
+            </div>
+            <div>
+              <label for="municipio">Municipio:</label>
+              <input type="text" id="municipio" placeholder="Municipio" />
+            </div>
+          </div>
+
+          <label for="logradouro">Logradouro:</label>
+          <input type="text" id="logradouro" placeholder="Rua, avenida, estrada" />
+
+          <div class="grid-2">
+            <div>
+              <label for="numero">Numero:</label>
+              <input type="text" id="numero" placeholder="Numero" />
+            </div>
+            <div>
+              <label for="bairro">Bairro:</label>
+              <input type="text" id="bairro" placeholder="Bairro" />
+            </div>
+          </div>
+
+          <label for="complemento">Complemento:</label>
+          <input type="text" id="complemento" placeholder="Apartamento, casa, sala, referencia" />
+
+          <label for="endereco">Endereco completo:</label>
+          <textarea id="endereco" placeholder="O endereco completo sera montado automaticamente, mas pode ser editado"></textarea>
+
+          <label for="instagram">Instagram:</label>
+          <input type="text" id="instagram" placeholder="@usuario" />
+
+          <div class="grid-2">
+            <div>
+              <label for="telefonePresidente">Telefone da presidente:</label>
+              <input type="tel" id="telefonePresidente" placeholder="(41) 99999-9999" />
+            </div>
+            <div>
+              <label for="telefoneVice">Telefone da vice-presidente:</label>
+              <input type="tel" id="telefoneVice" placeholder="(41) 99999-9999" />
+            </div>
+          </div>
+
+          <label for="email">E-mail:</label>
+          <input type="email" id="email" placeholder="email@exemplo.com" />
+
+          <div class="filiados-box">
+            <h2 style="margin-bottom: 4px;">Filiados no municipio</h2>
+            <div class="aviso">Informe apenas o numero total de filiados homens e mulheres. Nao cadastre nomes ou dados pessoais dos filiados.</div>
+            <div class="grid-2">
+              <div>
+                <label for="filiadosMulheres">Numero de filiadas mulheres:</label>
+                <input type="number" id="filiadosMulheres" min="0" step="1" placeholder="Ex: 120" />
+              </div>
+              <div>
+                <label for="filiadosHomens">Numero de filiados homens:</label>
+                <input type="number" id="filiadosHomens" min="0" step="1" placeholder="Ex: 80" />
+              </div>
+            </div>
+          </div>
+
+          <label for="ata">Situacao documental / ata:</label>
+          <select id="ata">
+            <option value="Ata OK">Ata OK</option>
+            <option value="Ata pendente">Ata pendente</option>
+            <option value="Sem informacao">Sem informacao</option>
+          </select>
+
+          <label for="ataArquivo">Anexar ata atualizada - imagem ou PDF:</label>
+          <input type="file" id="ataArquivo" accept="image/*,.pdf" />
+          <div id="ataPreview"></div>
+
+          <label for="foto">Foto atualizada:</label>
+          <select id="foto">
+            <option value="Foto atualizada">Foto atualizada</option>
+            <option value="Foto pendente">Foto pendente</option>
+            <option value="Sem informacao">Sem informacao</option>
+          </select>
+
+          <label for="fotoPresidente">Anexar foto da presidente municipal:</label>
+          <input type="file" id="fotoPresidente" accept="image/*" />
+          <div id="fotoPreview"></div>
+
+          <label for="briefing">Briefing breve do municipio:</label>
+          <textarea id="briefing" placeholder="Resumo politico do municipio, liderancas, forca local, demandas e oportunidades"></textarea>
+
+          <label for="conversas">Ultimas conversas:</label>
+          <textarea id="conversas" placeholder="Data, assunto tratado, encaminhamentos e proximos passos"></textarea>
+
+          <button id="btnSalvar" class="btn-primary" type="button">Salvar Cadastro Online</button>
+          <button id="btnLimpar" class="btn-secondary" type="button">Limpar Formulario</button>
+        </section>
+
+        <section class="card">
+          <h2>Cadastros Salvos</h2>
+          <label for="importarExcel">Importar planilha Excel com dados das presidentes:</label>
+          <input type="file" id="importarExcel" accept=".xlsx,.xls" />
+          <div class="aviso">A importacao aceita colunas como Municipio, Presidente, Telefone, Email, Endereco, CEP, Nascimento e Ata.</div>
+
+          <label>Importar filiados estaduais separados por sexo:</label>
+          <div class="grid-2">
+            <div>
+              <label for="importarFiliadasMulheresExcel">Planilha de filiadas mulheres:</label>
+              <input type="file" id="importarFiliadasMulheresExcel" accept=".xlsx,.xls" />
+            </div>
+            <div>
+              <label for="importarFiliadosHomensExcel">Planilha de filiados homens:</label>
+              <input type="file" id="importarFiliadosHomensExcel" accept=".xlsx,.xls" />
+            </div>
+          </div>
+          <button id="btnImportarFiliadosSeparados" class="btn-primary" type="button">Unir planilhas e atualizar grafico</button>
+          <div class="aviso">Envie uma planilha de mulheres e outra de homens. O sistema conta por municipio, une os dois resultados e salva apenas numeros e percentuais. Nao salva nomes de filiados.</div>
+          <div class="top-actions">
+            <button id="btnExportar" class="btn-secondary" type="button">Baixar Planilha CSV</button>
+            <button id="btnApagarTudo" class="btn-danger" type="button">Apagar Tudo</button>
+          </div>
+          <input class="search-box" type="text" id="busca" placeholder="Pesquisar por nome ou municipio" />
+          <div id="lista"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <footer>PL MULHER PARANA - Juntas, somos mais fortes!</footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, addDoc, setDoc, doc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAeiB0wT5t-adcTWNHzG38-F5ETsKB7UDc",
+      authDomain: "pl-mulher.firebaseapp.com",
+      projectId: "pl-mulher",
+      storageBucket: "pl-mulher.firebasestorage.app",
+      messagingSenderId: "171316537016",
+      appId: "1:171316537016:web:e163ded0f1e8f5f153b64d",
+      measurementId: "G-0R4NGBRVYQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+    const auth = getAuth(app);
+    const colecao = collection(db, "pl_mulher_parana");
+    let usuarioAtual = null;
+    let cadastros = [];
+
+    const $ = (id) => document.getElementById(id);
+
+    function mostrarErro(erro, mensagemPadrao) {
+      console.error(erro);
+      alert(mensagemPadrao + (erro && erro.message ? "\n\nDetalhe: " + erro.message : ""));
+    }
+
+    async function entrarSistema() {
+      const email = $("loginEmail").value.trim();
+      const senha = $("loginSenha").value;
+      if (!email || !senha) return alert("Informe e-mail e senha.");
+      try {
+        await signInWithEmailAndPassword(auth, email, senha);
+      } catch (erro) {
+        mostrarErro(erro, "Erro ao entrar. Verifique e-mail, senha e se o usuario foi criado no Firebase Authentication.");
+      }
+    }
+
+    async function sairSistema() {
+      await signOut(auth);
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      usuarioAtual = user;
+      $("loginScreen").classList.toggle("hidden", !!user);
+      $("appArea").classList.toggle("hidden", !user);
+      $("usuarioLogado").innerText = user ? user.email : "-";
+    });
+
+    async function buscarCEP() {
+      const cepCampo = $("cep");
+      const cep = cepCampo.value.replace(/\D/g, "");
+      if (cep.length !== 8) return;
+      try {
+        const resposta = await fetch("https://viacep.com.br/ws/" + cep + "/json/");
+        const dados = await resposta.json();
+        if (dados.erro) return alert("CEP nao encontrado. Verifique o numero digitado.");
+        cepCampo.value = cep.replace(/(\d{5})(\d{3})/, "$1-$2");
+        $("logradouro").value = dados.logradouro || "";
+        $("bairro").value = dados.bairro || "";
+        $("municipio").value = dados.localidade || "";
+        montarEnderecoCompleto();
+      } catch (erro) {
+        mostrarErro(erro, "Nao foi possivel buscar o CEP agora. Preencha manualmente.");
+      }
+    }
+
+    function montarEnderecoCompleto() {
+      const logradouro = $("logradouro").value.trim();
+      const numero = $("numero").value.trim();
+      const bairro = $("bairro").value.trim();
+      const municipio = $("municipio").value.trim();
+      const complemento = $("complemento").value.trim();
+      const cep = $("cep").value.trim();
+      const partes = [];
+      if (logradouro) partes.push(logradouro + (numero ? ", " + numero : ""));
+      if (complemento) partes.push(complemento);
+      if (bairro) partes.push("Bairro " + bairro);
+      if (municipio) partes.push(municipio + "/PR");
+      if (cep) partes.push("CEP " + cep);
+      $("endereco").value = partes.join(" - ");
+    }
+
+    async function enviarArquivoOnline(arquivo, pasta) {
+      if (!arquivo) return { url: "", nome: "", tipo: "" };
+      const limiteMB = 10;
+      if (arquivo.size > limiteMB * 1024 * 1024) {
+        alert("Arquivo muito grande. Use arquivo de ate " + limiteMB + " MB.");
+        return { url: "", nome: "", tipo: "" };
+      }
+      const caminho = pasta + "/" + Date.now() + "-" + arquivo.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const arquivoRef = ref(storage, caminho);
+      await uploadBytes(arquivoRef, arquivo);
+      const url = await getDownloadURL(arquivoRef);
+      return { url: url, nome: arquivo.name, tipo: arquivo.type };
+    }
+
+    async function salvarCadastro() {
+      if (!usuarioAtual) return alert("Faca login para salvar alteracoes.");
+      montarEnderecoCompleto();
+      const editId = $("editId").value;
+      const ataArquivo = $("ataArquivo").files[0];
+      const fotoArquivo = $("fotoPresidente").files[0];
+      const cadastroAtual = editId ? cadastros.find(c => c.id === editId) || {} : {};
+
+      try {
+        const ataOnline = ataArquivo ? await enviarArquivoOnline(ataArquivo, "atas") : { url: cadastroAtual.ataArquivoUrl || "", nome: cadastroAtual.ataArquivoNome || "", tipo: cadastroAtual.ataArquivoTipo || "" };
+        const fotoOnline = fotoArquivo ? await enviarArquivoOnline(fotoArquivo, "fotos_presidentes") : { url: cadastroAtual.fotoPresidenteUrl || "", nome: cadastroAtual.fotoPresidenteNome || "", tipo: cadastroAtual.fotoPresidenteTipo || "" };
+        const cadastro = {
+          nome: $("nome").value.trim(),
+          nascimento: $("nascimento").value,
+          cep: $("cep").value.trim(),
+          logradouro: $("logradouro").value.trim(),
+          numero: $("numero").value.trim(),
+          bairro: $("bairro").value.trim(),
+          complemento: $("complemento").value.trim(),
+          endereco: $("endereco").value.trim(),
+          municipio: $("municipio").value.trim(),
+          instagram: $("instagram").value.trim(),
+          telefonePresidente: $("telefonePresidente").value.trim(),
+          telefoneVice: $("telefoneVice").value.trim(),
+          email: $("email").value.trim(),
+          filiadosMulheres: Number($("filiadosMulheres").value || 0),
+          filiadosHomens: Number($("filiadosHomens").value || 0),
+          ata: $("ata").value,
+          ataArquivoUrl: ataOnline.url,
+          ataArquivoNome: ataOnline.nome,
+          ataArquivoTipo: ataOnline.tipo,
+          foto: $("foto").value,
+          fotoPresidenteUrl: fotoOnline.url,
+          fotoPresidenteNome: fotoOnline.nome,
+          fotoPresidenteTipo: fotoOnline.tipo,
+          briefing: $("briefing").value.trim(),
+          conversas: $("conversas").value.trim(),
+          atualizadoEm: new Date().toLocaleString("pt-BR"),
+          atualizadoPor: usuarioAtual.email,
+          atualizadoPorUid: usuarioAtual.uid,
+          atualizadoTimestamp: serverTimestamp()
+        };
+        if (!cadastro.nome || !cadastro.municipio) return alert("Preencha pelo menos o nome completo e o municipio.");
+        if (editId) {
+          await setDoc(doc(db, "pl_mulher_parana", editId), cadastro, { merge: true });
+          await addDoc(collection(db, "pl_mulher_parana", editId, "historico"), historicoPayload("Edicao de cadastro"));
+        } else {
+          const novo = await addDoc(colecao, { ...cadastro, criadoEm: new Date().toLocaleString("pt-BR"), criadoPor: usuarioAtual.email, criadoPorUid: usuarioAtual.uid });
+          await addDoc(collection(db, "pl_mulher_parana", novo.id, "historico"), historicoPayload("Criacao de cadastro"));
+        }
+        limparFormulario();
+        alert("Cadastro salvo online com sucesso.");
+      } catch (erro) {
+        mostrarErro(erro, "Erro ao salvar. Verifique as regras do Firestore/Storage no Firebase.");
+      }
+    }
+
+    function historicoPayload(acao) {
+      return { acao: acao, usuarioEmail: usuarioAtual.email, usuarioUid: usuarioAtual.uid, data: new Date().toLocaleString("pt-BR"), timestamp: serverTimestamp() };
+    }
+
+    function listarCadastros() {
+      $("statTotal").innerText = cadastros.length;
+      $("statAtaOk").innerText = cadastros.filter(c => c.ata === "Ata OK").length;
+      $("statAtaPendente").innerText = cadastros.filter(c => c.ata !== "Ata OK").length;
+      $("statPresidentes").innerText = cadastros.filter(c => c.nome).length;
+      const termo = $("busca").value.toLowerCase();
+      const lista = $("lista");
+      lista.innerHTML = "";
+      const filtrados = cadastros.filter(c => (c.nome || "").toLowerCase().includes(termo) || (c.municipio || "").toLowerCase().includes(termo));
+      if (filtrados.length === 0) {
+        lista.innerHTML = "<p>Nenhum cadastro encontrado.</p>";
+        return;
+      }
+      filtrados.forEach((c) => {
+        const ataClasse = c.ata === "Ata OK" ? "status-ok" : "status-pendente";
+        const fotoClasse = c.foto === "Foto atualizada" ? "status-ok" : "status-pendente";
+        const ataLink = c.ataArquivoUrl ? "<p><strong>Arquivo da ata:</strong> <a class='arquivo-link' href='" + c.ataArquivoUrl + "' target='_blank'>Abrir " + escapeHtml(c.ataArquivoNome || "arquivo") + "</a></p>" : "<p><strong>Arquivo da ata:</strong> -</p>";
+        const fotoLink = c.fotoPresidenteUrl ? "<p><strong>Foto da presidente:</strong><br><img src='" + c.fotoPresidenteUrl + "' class='preview-img'><a class='arquivo-link' href='" + c.fotoPresidenteUrl + "' target='_blank'>Abrir foto</a></p>" : "<p><strong>Foto da presidente:</strong> -</p>";
+        lista.insertAdjacentHTML("beforeend", "<div class='registro'>" +
+          "<h3>" + escapeHtml(c.nome || "-") + "</h3>" +
+          "<p><strong>Municipio:</strong> " + escapeHtml(c.municipio || "-") + "</p>" +
+          "<p><strong>Nascimento:</strong> " + escapeHtml(formatarData(c.nascimento)) + "</p>" +
+          "<p><strong>CEP:</strong> " + escapeHtml(c.cep || "-") + "</p>" +
+          "<p><strong>Endereco:</strong> " + escapeHtml(c.endereco || "-") + "</p>" +
+          "<p><strong>Instagram:</strong> " + escapeHtml(c.instagram || "-") + "</p>" +
+          "<p><strong>Telefone presidente:</strong> " + escapeHtml(c.telefonePresidente || "-") + " " + montarLinksContato(c.telefonePresidente, "presidente") + "</p>" +
+          "<p><strong>Telefone vice-presidente:</strong> " + escapeHtml(c.telefoneVice || "-") + " " + montarLinksContato(c.telefoneVice, "vice-presidente") + "</p>" +
+          "<p><strong>E-mail:</strong> " + escapeHtml(c.email || "-") + "</p>" +
+          montarBlocoFiliados(c) +
+          "<p><strong>Ata:</strong> <span class='" + ataClasse + "'>" + escapeHtml(c.ata || "-") + "</span></p>" + ataLink +
+          "<p><strong>Foto:</strong> <span class='" + fotoClasse + "'>" + escapeHtml(c.foto || "-") + "</span></p>" + fotoLink +
+          "<p><strong>Briefing:</strong> " + escapeHtml(c.briefing || "-") + "</p>" +
+          "<p><strong>Ultimas conversas:</strong> " + escapeHtml(c.conversas || "-") + "</p>" +
+          "<p><strong>Ultima atualizacao:</strong> " + escapeHtml(c.atualizadoEm || "-") + "</p>" +
+          "<p><strong>Atualizado por:</strong> " + escapeHtml(c.atualizadoPor || "-") + "</p>" +
+          "<p><strong>Criado por:</strong> " + escapeHtml(c.criadoPor || "-") + "</p>" +
+          "<div class='historico-box'><strong>Historico:</strong><br>Criacao e edicoes sao registradas no Firebase.</div>" +
+          "<div class='actions'><button class='btn-secondary' data-edit='" + c.id + "' type='button'>Editar</button><button class='btn-danger' data-delete='" + c.id + "' type='button'>Excluir</button></div>" +
+          "</div>");
+      });
+    }
+
+    function editarCadastro(id) {
+      const c = cadastros.find(item => item.id === id);
+      if (!c) return;
+      $("editId").value = id;
+      ["nome","nascimento","cep","logradouro","numero","bairro","complemento","endereco","municipio","instagram","telefonePresidente","telefoneVice","email","briefing","conversas"].forEach(campo => $(campo).value = c[campo] || "");
+      $("filiadosMulheres").value = c.filiadosMulheres || "";
+      $("filiadosHomens").value = c.filiadosHomens || "";
+      $("ata").value = c.ata || "Sem informacao";
+      $("foto").value = c.foto || "Sem informacao";
+      $("ataPreview").innerHTML = c.ataArquivoUrl ? "<a class='arquivo-link' href='" + c.ataArquivoUrl + "' target='_blank'>Abrir ata ja salva</a>" : "";
+      $("fotoPreview").innerHTML = c.fotoPresidenteUrl ? "<img src='" + c.fotoPresidenteUrl + "' class='preview-img'><a class='arquivo-link' href='" + c.fotoPresidenteUrl + "' target='_blank'>Abrir foto ja salva</a>" : "";
+      $("formTitle").innerText = "Editar Cadastro";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function excluirCadastro(id) {
+      if (!usuarioAtual) return alert("Faca login para excluir.");
+      if (!confirm("Deseja excluir este cadastro?")) return;
+      try {
+        await addDoc(collection(db, "pl_mulher_parana", id, "historico"), historicoPayload("Exclusao de cadastro"));
+        await deleteDoc(doc(db, "pl_mulher_parana", id));
+      } catch (erro) {
+        mostrarErro(erro, "Erro ao excluir cadastro.");
+      }
+    }
+
+    async function apagarTudo() {
+      if (!usuarioAtual) return alert("Faca login para apagar dados.");
+      if (!confirm("Tem certeza que deseja apagar todos os cadastros?")) return;
+      try {
+        const snapshot = await getDocs(colecao);
+        for (const item of snapshot.docs) await deleteDoc(doc(db, "pl_mulher_parana", item.id));
+      } catch (erro) {
+        mostrarErro(erro, "Erro ao apagar cadastros.");
+      }
+    }
+
+    function limparFormulario() {
+      ["editId","nome","nascimento","cep","logradouro","numero","bairro","complemento","endereco","municipio","instagram","telefonePresidente","telefoneVice","email","briefing","conversas","filiadosMulheres","filiadosHomens"].forEach(id => $(id).value = "");
+      $("ata").value = "Ata OK";
+      $("foto").value = "Foto atualizada";
+      $("ataArquivo").value = "";
+      $("fotoPresidente").value = "";
+      $("ataPreview").innerHTML = "";
+      $("fotoPreview").innerHTML = "";
+      $("formTitle").innerText = "Novo Cadastro";
+    }
+
+    function limparTelefone(numero) {
+      return String(numero || "").replace(/\D/g, "");
+    }
+
+    function calcularFiliados(c) {
+      const mulheres = Number(c.filiadosMulheres || 0);
+      const homens = Number(c.filiadosHomens || 0);
+      const total = mulheres + homens;
+      const percentualMulheres = total > 0 ? Math.round((mulheres / total) * 100) : 0;
+      const percentualHomens = total > 0 ? 100 - percentualMulheres : 0;
+      const grausMulheres = total > 0 ? (mulheres / total) * 360 : 0;
+      return { mulheres: mulheres, homens: homens, total: total, percentualMulheres: percentualMulheres, percentualHomens: percentualHomens, grausMulheres: grausMulheres };
+    }
+
+    function montarBlocoFiliados(c) {
+      const f = calcularFiliados(c);
+      return "<div class='filiados-box'>" +
+        "<strong>Filiados no municipio</strong>" +
+        "<div class='filiados-resumo'>" +
+          "<div class='filiados-mini'><strong>" + f.mulheres + "</strong><span>Mulheres<br>" + f.percentualMulheres + "%</span></div>" +
+          "<div class='filiados-mini'><strong>" + f.homens + "</strong><span>Homens<br>" + f.percentualHomens + "%</span></div>" +
+          "<div class='filiados-mini'><strong>" + f.total + "</strong><span>Total<br>100%</span></div>" +
+        "</div>" +
+        "<div class='grafico-pizza' style='background: conic-gradient(var(--rosa) 0deg " + f.grausMulheres + "deg, var(--azul) " + f.grausMulheres + "deg 360deg);'></div>" +
+        "<div class='legenda-grafico'>" +
+          "<span class='legenda-item'><span class='bolinha mulheres'></span> Mulheres " + f.percentualMulheres + "%</span>" +
+          "<span class='legenda-item'><span class='bolinha homens'></span> Homens " + f.percentualHomens + "%</span>" +
+        "</div>" +
+      "</div>";
+    }
+
+    function montarLinksContato(numero, cargo) {
+      const telefone = limparTelefone(numero);
+      if (!telefone) return "";
+      const telefoneBR = telefone.startsWith("55") ? telefone : "55" + telefone;
+      const mensagem = encodeURIComponent("Ola, tudo bem? Aqui e o Wagner, da gestao do PL Mulher Parana. Gostaria de conversar sobre o PL Mulher do seu municipio.");
+      return "<br><a class='contato-link' href='https://wa.me/" + telefoneBR + "?text=" + mensagem + "' target='_blank'>Enviar WhatsApp para " + cargo + "</a><a class='contato-link' href='tel:+" + telefoneBR + "'>Ligar</a>";
+    }
+
+    function formatarData(data) {
+      if (!data) return "-";
+      const partes = String(data).split("-");
+      if (partes.length !== 3) return data;
+      return partes[2] + "/" + partes[1] + "/" + partes[0];
+    }
+
+    function normalizarTexto(texto) {
+      return String(texto || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().trim();
+    }
+
+    function valorPorColuna(linha, nomesPossiveis) {
+      const chaves = Object.keys(linha);
+      for (const nome of nomesPossiveis) {
+        const encontrado = chaves.find(chave => normalizarTexto(chave) === normalizarTexto(nome));
+        if (encontrado) return linha[encontrado];
+      }
+      return "";
+    }
+
+    function converterDataExcel(valor) {
+      if (!valor) return "";
+      if (typeof valor === "number" && window.XLSX) {
+        const data = XLSX.SSF.parse_date_code(valor);
+        if (!data) return "";
+        return data.y + "-" + String(data.m).padStart(2, "0") + "-" + String(data.d).padStart(2, "0");
+      }
+      const texto = String(valor).trim();
+      const partes = texto.match(/([0-9]{1,2})[\/\-]([0-9]{1,2})[\/\-]([0-9]{2,4})/);
+      if (partes) {
+        let ano = partes[3];
+        if (ano.length === 2) ano = "19" + ano;
+        return ano + "-" + partes[2].padStart(2, "0") + "-" + partes[1].padStart(2, "0");
+      }
+      return "";
+    }
+
+    function separarEndereco(enderecoCompleto) {
+      const endereco = String(enderecoCompleto || "").trim();
+      if (!endereco) return { logradouro: "", numero: "", bairro: "", complemento: "" };
+      const numeroEncontrado = endereco.match(/[0-9]+[A-Za-z]?/);
+      const numero = numeroEncontrado ? numeroEncontrado[0] : "";
+      const logradouro = numero ? endereco.split(numero)[0].replace(",", "").trim() : endereco;
+      const complemento = numero ? endereco.replace(logradouro, "").trim() : "";
+      return { logradouro: logradouro, numero: numero, bairro: "", complemento: complemento };
+    }
+
+    async function importarPlanilhaExcel(input) {
+      if (!usuarioAtual) return alert("Faca login para importar dados.");
+      const arquivo = input.files[0];
+      if (!arquivo) return;
+      if (!window.XLSX) return alert("Biblioteca de leitura da planilha nao carregou. Verifique sua internet.");
+      const leitor = new FileReader();
+      leitor.onload = async function(e) {
+        try {
+          const dados = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(dados, { type: "array", cellDates: false });
+          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const linhas = XLSX.utils.sheet_to_json(sheet, { range: 1, defval: "" });
+          let importados = 0;
+          for (const linha of linhas) {
+            const municipio = String(valorPorColuna(linha, ["Municipio", "Município", "Cidade"])).trim();
+            if (!municipio) continue;
+            const enderecoOriginal = String(valorPorColuna(linha, ["ENDERECO", "ENDEREÇO", "Endereco", "Endereço", "Endereco completo", "Endereço completo"])).trim();
+            const enderecoSeparado = separarEndereco(enderecoOriginal);
+            await addDoc(colecao, {
+              nome: String(valorPorColuna(linha, ["Presidente", "Nome", "Nome completo"])).trim(),
+              nascimento: converterDataExcel(valorPorColuna(linha, ["NASCIMENTO", "Nascimento", "Data de nascimento"])),
+              cep: String(valorPorColuna(linha, ["CEP"])).trim(),
+              logradouro: enderecoSeparado.logradouro,
+              numero: enderecoSeparado.numero,
+              bairro: enderecoSeparado.bairro,
+              complemento: enderecoSeparado.complemento,
+              endereco: enderecoOriginal,
+              municipio: municipio,
+              instagram: "",
+              telefonePresidente: String(valorPorColuna(linha, ["Telefone", "Celular", "WhatsApp", "Whatsapp"])).trim(),
+              telefoneVice: "",
+              email: String(valorPorColuna(linha, ["Email", "E-mail", "E mail"])).trim(),
+              filiadosMulheres: Number(valorPorColuna(linha, ["Filiadas mulheres", "Mulheres", "Filiados mulheres", "N mulheres", "Numero mulheres"]) || 0),
+              filiadosHomens: Number(valorPorColuna(linha, ["Filiados homens", "Homens", "N homens", "Numero homens"]) || 0),
+              ata: "Sem informacao",
+              foto: "Sem informacao",
+              briefing: "",
+              conversas: "",
+              ataArquivoUrl: "",
+              ataArquivoNome: "",
+              ataArquivoTipo: "",
+              fotoPresidenteUrl: "",
+              fotoPresidenteNome: "",
+              fotoPresidenteTipo: "",
+              atualizadoEm: new Date().toLocaleString("pt-BR"),
+              atualizadoPor: usuarioAtual.email,
+              atualizadoPorUid: usuarioAtual.uid,
+              criadoEm: new Date().toLocaleString("pt-BR"),
+              criadoPor: usuarioAtual.email,
+              criadoPorUid: usuarioAtual.uid,
+              atualizadoTimestamp: serverTimestamp()
+            });
+            importados++;
+          }
+          input.value = "";
+          alert("Importacao concluida. Cadastros enviados para a nuvem: " + importados + ".");
+        } catch (erro) {
+          mostrarErro(erro, "Erro ao importar planilha.");
+        }
+      };
+      leitor.readAsArrayBuffer(arquivo);
+    }
+
+    function contarFiliadosPorMunicipio(workbook) {
+      const mapa = {};
+      workbook.SheetNames.forEach(nomeAba => {
+        const sheet = workbook.Sheets[nomeAba];
+        const linhas = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+        linhas.forEach(linha => {
+          const municipio = String(valorPorColuna(linha, ["Municipio", "Município", "Cidade", "Zona Municipio", "Zona Município", "Municipio Eleitoral", "Município eleitoral", "NM_MUNICIPIO", "Nome municipio"])).trim();
+          if (!municipio) return;
+          mapa[municipio] = (mapa[municipio] || 0) + 1;
+        });
+      });
+      return mapa;
+    }
+
+    async function lerWorkbookArquivo(arquivo) {
+      return new Promise((resolve, reject) => {
+        const leitor = new FileReader();
+        leitor.onload = function(e) {
+          try {
+            const dados = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(dados, { type: "array", cellDates: false });
+            resolve(workbook);
+          } catch (erro) {
+            reject(erro);
+          }
+        };
+        leitor.onerror = reject;
+        leitor.readAsArrayBuffer(arquivo);
+      });
+    }
+
+    async function importarFiliadosSeparados() {
+      if (!usuarioAtual) return alert("Faca login para importar as planilhas de filiados.");
+      if (!window.XLSX) return alert("Biblioteca de leitura da planilha nao carregou. Verifique sua internet.");
+
+      const arquivoMulheres = $("importarFiliadasMulheresExcel").files[0];
+      const arquivoHomens = $("importarFiliadosHomensExcel").files[0];
+
+      if (!arquivoMulheres || !arquivoHomens) {
+        alert("Anexe as duas planilhas: uma de mulheres e outra de homens.");
+        return;
+      }
+
+      try {
+        const workbookMulheres = await lerWorkbookArquivo(arquivoMulheres);
+        const workbookHomens = await lerWorkbookArquivo(arquivoHomens);
+        const mapaMulheres = contarFiliadosPorMunicipio(workbookMulheres);
+        const mapaHomens = contarFiliadosPorMunicipio(workbookHomens);
+        const municipios = Array.from(new Set([...Object.keys(mapaMulheres), ...Object.keys(mapaHomens)]));
+
+        const snapshot = await getDocs(colecao);
+        const existentes = snapshot.docs.map(item => ({ id: item.id, ...item.data() }));
+        let atualizados = 0;
+        let criados = 0;
+
+        for (const municipio of municipios) {
+          const mulheres = mapaMulheres[municipio] || 0;
+          const homens = mapaHomens[municipio] || 0;
+          const existente = existentes.find(c => normalizarTexto(c.municipio) === normalizarTexto(municipio));
+          const dadosMunicipio = {
+            municipio: municipio,
+            filiadosMulheres: mulheres,
+            filiadosHomens: homens,
+            atualizadoEm: new Date().toLocaleString("pt-BR"),
+            atualizadoPor: usuarioAtual.email,
+            atualizadoPorUid: usuarioAtual.uid,
+            atualizadoTimestamp: serverTimestamp()
+          };
+
+          if (existente) {
+            await setDoc(doc(db, "pl_mulher_parana", existente.id), dadosMunicipio, { merge: true });
+            await addDoc(collection(db, "pl_mulher_parana", existente.id, "historico"), historicoPayload("Importacao separada de filiados homens e mulheres"));
+            atualizados++;
+          } else {
+            await addDoc(colecao, {
+              ...dadosMunicipio,
+              nome: "",
+              ata: "Sem informacao",
+              foto: "Sem informacao",
+              briefing: "",
+              conversas: "",
+              criadoEm: new Date().toLocaleString("pt-BR"),
+              criadoPor: usuarioAtual.email,
+              criadoPorUid: usuarioAtual.uid
+            });
+            criados++;
+          }
+        }
+
+        $("importarFiliadasMulheresExcel").value = "";
+        $("importarFiliadosHomensExcel").value = "";
+        alert("Importacao concluida. Municipios atualizados: " + atualizados + ". Municipios criados: " + criados + ".");
+      } catch (erro) {
+        mostrarErro(erro, "Erro ao importar as duas planilhas de filiados.");
+      }
+    }
+
+    function exportarCSV() {
+      if (cadastros.length === 0) return alert("Nao ha cadastros para exportar.");
+      const colunas = ["Nome completo","Data de nascimento","CEP","Logradouro","Numero","Bairro","Complemento","Endereco completo","Municipio","Instagram","Telefone presidente","Telefone vice-presidente","E-mail","Filiadas mulheres","Filiados homens","Total filiados","% mulheres","% homens","Situacao da ata","Link da ata","Foto","Link da foto","Briefing","Ultimas conversas","Atualizado em"];
+      const linhas = cadastros.map(c => {
+        const f = calcularFiliados(c);
+        return [c.nome, c.nascimento, c.cep, c.logradouro, c.numero, c.bairro, c.complemento, c.endereco, c.municipio, c.instagram, c.telefonePresidente, c.telefoneVice, c.email, f.mulheres, f.homens, f.total, f.percentualMulheres + "%", f.percentualHomens + "%", c.ata, c.ataArquivoUrl || "", c.foto, c.fotoPresidenteUrl || "", c.briefing, c.conversas, c.atualizadoEm];
+      });
+      let csv = colunas.join(";") + "\n";
+      linhas.forEach(linha => {
+        csv += linha.map(campo => "\"" + String(campo || "").replace(/"/g, "\"\"") + "\"").join(";") + "\n";
+      });
+      baixarArquivo(csv, "cadastros-pl-mulher-pr-online.csv", "text/csv;charset=utf-8;");
+    }
+
+    function baixarArquivo(conteudo, nomeArquivo, tipo) {
+      const blob = new Blob([conteudo], { type: tipo });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = nomeArquivo;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    function escapeHtml(texto) {
+      return String(texto || "").replace(/[&<>'"]/g, caractere => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#039;", "\"": "&quot;" }[caractere]));
+    }
+
+    function iniciarEventos() {
+      $("btnEntrar").addEventListener("click", entrarSistema);
+      $("btnSair").addEventListener("click", sairSistema);
+      $("btnSalvar").addEventListener("click", salvarCadastro);
+      $("btnLimpar").addEventListener("click", limparFormulario);
+      $("btnExportar").addEventListener("click", exportarCSV);
+      $("btnApagarTudo").addEventListener("click", apagarTudo);
+      $("cep").addEventListener("blur", buscarCEP);
+      $("busca").addEventListener("input", listarCadastros);
+      $("importarExcel").addEventListener("change", (e) => importarPlanilhaExcel(e.target));
+      $("btnImportarFiliadosSeparados").addEventListener("click", importarFiliadosSeparados);
+      ["logradouro", "numero", "bairro", "municipio", "complemento", "cep"].forEach(id => $(id).addEventListener("input", montarEnderecoCompleto));
+      $("lista").addEventListener("click", (e) => {
+        const editar = e.target.closest("[data-edit]");
+        const excluir = e.target.closest("[data-delete]");
+        if (editar) editarCadastro(editar.dataset.edit);
+        if (excluir) excluirCadastro(excluir.dataset.delete);
+      });
+    }
+
+    function rodarTestesBasicos() {
+      console.assert(typeof buscarCEP === "function", "Teste: buscarCEP deve existir");
+      console.assert(formatarData("2025-04-29") === "29/04/2025", "Teste: formatarData deve converter yyyy-mm-dd");
+      console.assert(limparTelefone("(41) 99999-9999") === "41999999999", "Teste: limparTelefone deve remover caracteres");
+      console.assert(valorPorColuna({ Municipio: "Curitiba" }, ["Municipio", "Município"]) === "Curitiba", "Teste: valorPorColuna deve localizar variacao sem acento");
+      const testeFiliados = calcularFiliados({ filiadosMulheres: 60, filiadosHomens: 40 });
+      console.assert(testeFiliados.total === 100 && testeFiliados.percentualMulheres === 60 && testeFiliados.percentualHomens === 40, "Teste: calculo de filiados deve retornar total e percentuais");
+      console.assert(typeof importarFiliadosSeparados === "function", "Teste: importacao separada de filiados deve existir");
+    }
+
+    iniciarEventos();
+    rodarTestesBasicos();
+
+    const q = query(colecao, orderBy("municipio"));
+    onSnapshot(q, (snapshot) => {
+      cadastros = snapshot.docs.map(item => ({ id: item.id, ...item.data() }));
+      listarCadastros();
+    }, (erro) => {
+      mostrarErro(erro, "Erro ao carregar cadastros. Verifique se o Firestore foi criado e se as regras permitem usuario autenticado.");
+    });
+  </script>
+</body>
+</html>
