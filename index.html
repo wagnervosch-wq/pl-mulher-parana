@@ -819,18 +819,46 @@
       leitor.readAsArrayBuffer(arquivo);
     }
 
-    function contarFiliadosPorMunicipio(workbook) {
-      const mapa = {};
-      workbook.SheetNames.forEach(nomeAba => {
-        const sheet = workbook.Sheets[nomeAba];
-        const linhas = XLSX.utils.sheet_to_json(sheet, { defval: "" });
-        linhas.forEach(linha => {
-          const municipio = String(valorPorColuna(linha, ["Municipio", "Município", "Cidade", "Zona Municipio", "Zona Município", "Municipio Eleitoral", "Município eleitoral", "NM_MUNICIPIO", "Nome municipio"])).trim();
-          if (!municipio) return;
-          mapa[municipio] = (mapa[municipio] || 0) + 1;
-        });
-      });
-      return mapa;
+function contarFiliadosPorMunicipio(workbook) {
+  const mapa = {};
+
+  workbook.SheetNames.forEach(nomeAba => {
+    const sheet = workbook.Sheets[nomeAba];
+    const linhas = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+
+    linhas.forEach(linha => {
+      let municipio = String(valorPorColuna(linha, [
+        "8-MUNICIPIO",
+        "8-MUNICÍPIO",
+        "Municipio",
+        "Município",
+        "Cidade",
+        "NM_MUNICIPIO",
+        "Nome municipio"
+      ])).trim();
+
+      if (!municipio) return;
+
+      municipio = municipio.replace(/\s+/g, " ").trim();
+      const chave = normalizarTexto(municipio);
+
+      if (!mapa[chave]) {
+        mapa[chave] = { nome: municipio, total: 0 };
+      }
+
+      mapa[chave].total += 1;
+    });
+  });
+
+  const resultado = {};
+
+  Object.values(mapa).forEach(item => {
+    resultado[item.nome] = item.total;
+  });
+
+  console.log("Mapa de municipios lido:", resultado);
+  return resultado;
+}
     }
 
     async function lerWorkbookArquivo(arquivo) {
