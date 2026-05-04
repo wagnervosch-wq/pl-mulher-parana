@@ -54,14 +54,19 @@ async function salvarFotoPresidenteAutomatico(file){
   if(!usuarioAtual)return alert("Faca login para anexar a foto.");
   const id=$("editId")?$("editId").value:"";
   if(!id)return alert("Selecione primeiro o municipio/presidente antes de anexar a foto.");
-  const cadastroAtual=cadastros.find(c=>c.id===id)||{};
+
+  const cadastroBase=cadastros.find(c=>c.id===id)||{};
+  const municipioBase=chaveMunicipio(cadastroBase.municipio||$("municipio").value||"");
+  if(!municipioBase)return alert("Nao foi possivel identificar o municipio deste cadastro.");
+
   try{
     const imgCard=document.querySelector(".foto-presidente-fixa");
     const placeholder=document.querySelector(".foto-presidente-placeholder");
     if(imgCard)imgCard.classList.add("salvando");
     if(placeholder)placeholder.classList.add("salvando");
+
     const fotoOnline=await enviarArquivoOnline(file,"fotos_presidentes");
-    await setDoc(doc(db,"pl_mulher_parana",id),{
+    const dadosFoto={
       fotoPresidenteUrl:fotoOnline.url,
       fotoPresidenteNome:fotoOnline.nome,
       fotoPresidenteTipo:fotoOnline.tipo,
@@ -69,30 +74,26 @@ async function salvarFotoPresidenteAutomatico(file){
       atualizadoPor:usuarioAtual.email,
       atualizadoPorUid:usuarioAtual.uid,
       atualizadoTimestamp:serverTimestamp()
-    },{merge:true});
-    await addDoc(collection(db,"pl_mulher_parana",id,"historico"),historicoPayload("Atualizacao automatica da foto da presidente"));
-    cadastroAtual.fotoPresidenteUrl=fotoOnline.url;
-    cadastroAtual.fotoPresidenteNome=fotoOnline.nome;
-    cadastroAtual.fotoPresidenteTipo=fotoOnline.tipo;
+    };
 
-    const indice=cadastros.findIndex(c=>c.id===id);
-    if(indice>=0){
-      cadastros[indice]={
-        ...cadastros[indice],
-        fotoPresidenteUrl:fotoOnline.url,
-        fotoPresidenteNome:fotoOnline.nome,
-        fotoPresidenteTipo:fotoOnline.tipo,
-        atualizadoEm:new Date().toLocaleString("pt-BR"),
-        atualizadoPor:usuarioAtual.email,
-        atualizadoPorUid:usuarioAtual.uid
-      };
+    const docsMesmoMunicipio=cadastros.filter(c=>chaveMunicipio(c.municipio)===municipioBase);
+    const docsParaAtualizar=docsMesmoMunicipio.length?docsMesmoMunicipio:[cadastroBase];
+
+    for(const item of docsParaAtualizar){
+      if(!item.id)continue;
+      await setDoc(doc(db,"pl_mulher_parana",item.id),dadosFoto,{merge:true});
+      await addDoc(collection(db,"pl_mulher_parana",item.id,"historico"),historicoPayload("Atualizacao automatica da foto da presidente"));
     }
 
+    cadastros=cadastros.map(c=>chaveMunicipio(c.municipio)===municipioBase?{...c,...dadosFoto,atualizadoTimestamp:c.atualizadoTimestamp}:c);
+
     setHtml("fotoPreview","<img src='"+fotoOnline.url+"' class='preview-img'><a class='arquivo-link' href='"+fotoOnline.url+"' target='_blank'>Abrir foto salva</a>");
-    const chaveSel=$("municipioSelecionado")?$("municipioSelecionado").value:"";
-    if(chaveSel)listarCadastros();
+    const seletor=$("municipioSelecionado");
+    if(seletor)seletor.value=municipioBase;
+    listarCadastros();
+    alert("Foto salva e vinculada ao municipio.");
   }catch(e){
-    mostrarErro(e,"Erro ao salvar a foto automaticamente.");
+    mostrarErro(e,"Erro ao salvar a foto automaticamente. Verifique as regras do Storage e do Firestore.");
   }finally{
     const imgCard=document.querySelector(".foto-presidente-fixa");
     const placeholder=document.querySelector(".foto-presidente-placeholder");
